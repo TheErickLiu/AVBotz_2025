@@ -4,8 +4,7 @@ import serial
 from typing import List, Tuple
 
 SENSOR_GAME_ROTATION_VECTOR = 15
-LEN_GAME_ROTATION_VECTOR = 6
-
+MIN_LEN_GAME_ROTATION_VECTOR = 7
 
 # Convert quaternion (qx, qy, qz, qw) to Euler angles (yaw, pitch, roll) in degrees
 # https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
@@ -93,7 +92,7 @@ def read_data(ser: serial.Serial):
                 # Comma separated data: UART Output Format
                 # Timestamp,SensorID[,Value][,Value]...[,Value]
                 data = line.split(",")
-                if (len(data) == LEN_GAME_ROTATION_VECTOR) and (
+                if (len(data) >= MIN_LEN_GAME_ROTATION_VECTOR) and (
                     int(data[1]) == SENSOR_GAME_ROTATION_VECTOR
                 ):
                     q = Quaternion(data[2:6])

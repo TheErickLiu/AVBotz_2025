@@ -4,9 +4,9 @@ from typing import Tuple
 
 class Controller:
     def __init__(self, kp: float, ki: float, kd: float):
-        self.kp = kp # Proportional
-        self.ki = ki # Integral
-        self.kd = kd # Derivative
+        self.kp = kp # Proportional gain
+        self.ki = ki # Integral gain
+        self.kd = kd # Derivative gain
         self.totalError = 0
         self.prevError = 0
         self.verbose = False
@@ -31,7 +31,8 @@ class Controller:
 def random_noise(
     diste: float, timestep: int, magnitude: int = 1000, freq: int = 30
 ) -> Tuple[float, float]:
-    """ Calculate noise
+    """Calculate a random noise with a magnitude (meaning it can be negative, too) 
+    between 0N to 1000N from a distance between 0 and diste meters on every 30th timestep
     """
     if timestep % freq == 0:
         magnitude = np.random.uniform(-magnitude, magnitude)
@@ -41,7 +42,7 @@ def random_noise(
 
 
 def plot_angles_over_time(times: list, angles: list, filename: str = "tilt.png"):
-
+    """Plot simulation results and save figure"""
     plt.figure(figsize=(10, 5))
     plt.plot(times, angles, label="Tilt Angle (Degrees)")
     plt.xlabel("Time (seconds)")
@@ -55,14 +56,14 @@ def plot_angles_over_time(times: list, angles: list, filename: str = "tilt.png")
 class Simulation:
     def __init__(
         self,
-        controller: Controller,
-        robotMass: float,
-        g: float,  # Gravity
-        I: float,  # Rotational inertia
+        controller: Controller, # PID controller
+        robotMass: float,  # Example mass in kg
+        g: float,  # Gravity in m/s^2
+        I: float,  # Rotational inertia in kg*m^2
         dist: float,  # Distance from rotational axis to motor in meters
-        diste: float,  # Max distance from rotational axis to noise force in meters
-        timeStep: float,  # Time step for sim
-        currentPos: float,  # Tilt angle
+        diste: float,  # Maximum distance from rotational axis to noise force in meters
+        timeStep: float,  # Time step for simulation in seconds
+        currentPos: float,  # Initial tilt angle in degrees
     ):
         self.controller = controller
         self.robotMass = robotMass
@@ -77,13 +78,16 @@ class Simulation:
         self.n = 0
 
     def output(self, setpoint: float) -> float:
+        """Torque being applied by PID Controller"""
         return self.controller.output(self.currentPos, setpoint, self.timeStep)
 
     def noise(self) -> Tuple[float, float]:
+        """Calculate random noise"""
         return random_noise(self.diste, self.n)
     
 
     def simulate(self, setpoint: float, totalTime: float):
+        """Simulate with given setpoint and simulation total seconds"""
         numSteps = int(totalTime / self.timeStep)
 
         for _ in range(numSteps):
