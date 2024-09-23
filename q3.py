@@ -116,6 +116,5 @@ def main():
     sim = Simulation(cntrl, 9, 9.8, 0.2, 0.75, 0.5, 0.02, 0)
     sim.simulate(10, 8)
     
-
 if __name__ == "__main__":
     main()
