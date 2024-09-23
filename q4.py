@@ -32,7 +32,7 @@ class MPPIController:
 
     # MPPI cost function to optimize. Currently it considers distance to the target
     # and scale of the control. 
-    # 1. Higher control cost weight does not generate smooth plots. But I believe
+    # 1. Higher control cost weight != smooth plots. But I believe
     # it will smooth operations in the real environment. 
     # 2. I tried to penalize negative movements, but it didn't work well.
     def cost(self, x: float, y: float, ctrl: list, control_weight: float = 0.1) -> float:

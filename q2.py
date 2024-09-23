@@ -102,6 +102,11 @@ def read_data(ser: serial.Serial):
     except KeyboardInterrupt:
         ser.close()
 
-args = parse_args()
-ser = get_serial(args.dev, args.rate)
-read_data(ser)
+        
+def main():
+    args = parse_args()
+    ser = get_serial(args.dev, args.rate)
+    read_data(ser)
+
+if __name__ == "__main__":
+    main()
